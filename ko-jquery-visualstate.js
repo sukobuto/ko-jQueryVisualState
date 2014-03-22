@@ -1,4 +1,12 @@
-(function() {
+;(function(factory) {
+	if (typeof define === "function" && define.amd) {
+		// AMD anonymous module
+		define(["knockout", "jquery"], factory);
+	} else {
+		// No module loader (plain <script> tag) - put directly in global namespace
+		factory(window.ko, jQuery);
+	}
+})(function(ko, $) {
 	var jqvs = {};
 	
 	/**
@@ -21,18 +29,15 @@
 	 *   });
 	 *
 	 */
-	ko.bindingHandlers['visualState']
-		= jQuery
-		? {
-			init: function(element, valueAccessor) {
-				jQuery(element).trigger('jqvs-init', [ valueAccessor() ]);
-			},
-			update: function(element, valueAccessor) {
-				ko.bindingHandlers.css.update(element, valueAccessor);
-				jQuery(element).trigger('jqvs-changed', [ valueAccessor() ]);
-			}
+	ko.bindingHandlers['visualState'] = {
+		init: function(element, valueAccessor) {
+			$(element).trigger('jqvs-init', [ valueAccessor() ]);
+		},
+		update: function(element, valueAccessor) {
+			ko.bindingHandlers.css.update(element, valueAccessor);
+			$(element).trigger('jqvs-changed', [ valueAccessor() ]);
 		}
-		: ko.bindingHandlers.css;
+	}
 	
 	// sequencers that grouped by group_id
 	var sequencers = {};
@@ -96,4 +101,4 @@
 	}
 	
 	ko.jqvs = jqvs;
-})();
+});
